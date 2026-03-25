@@ -2,10 +2,10 @@
 
 RSpec.describe DeltaExchange do
   it "has a version number" do
-    expect(DeltaExchange::VERSION).not_to be nil
+    expect(DeltaExchange::VERSION).not_to be_nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  it "loads the client" do
+    expect { DeltaExchange::Client.new }.not_to raise_error
   end
 end

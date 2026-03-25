@@ -1,43 +1,121 @@
 # DeltaExchange
 
-TODO: Delete this and the text below, and describe your gem
+A Ruby client for the Delta Exchange API.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/delta_exchange`. To experiment with that code, run `bin/console` for an interactive prompt.
+**Requirement**: Ruby >= 3.2.0
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem 'delta_exchange'
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+And then execute:
 
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-```
+    $ bundle install
+
+Or install it yourself as:
+
+    $ gem install delta_exchange
 
 ## Usage
 
-TODO: Write usage instructions here
+### Configuration
 
-## Development
+```ruby
+DeltaExchange.configure do |config|
+  config.api_key = 'YOUR_API_KEY'
+  config.api_secret = 'YOUR_API_SECRET'
+  config.testnet = true # Optional, defaults to false
+end
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### REST API
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+The client can be used by instantiating `DeltaExchange::Client.new` or you can rely on the singleton module accessory directly. Note: All resource methods return a Hash with indifferent access (keys can be accessed as strings or symbols).
+
+```ruby
+# Using singleton (after configure)
+products = DeltaExchange.client.products.all
+
+# Using direct client
+client = DeltaExchange::Client.new
+
+# Market Data
+ticker = client.products.ticker('BTCUSD')
+
+# Orders
+order = client.orders.create({
+  product_id: 1,
+  size: 10,
+  side: 'buy',
+  order_type: 'limit_order',
+  limit_price: '50000'
+})
+
+# Cancel all orders (accepts query parameters)
+client.orders.cancel_all({ product_id: 1 })
+
+# Account
+balances = client.wallet.balances
+profile = client.account.profile
+```
+
+### Error Handling
+
+The gem wraps network and API responses within native Ruby classes.
+
+```ruby
+begin
+  client.orders.create({ product_id: 999999, size: 10 })
+rescue DeltaExchange::RateLimitError => e
+  puts "Rate limited! Retry after #{e.retry_after_seconds} seconds"
+rescue DeltaExchange::ApiError => e
+  puts "API rejected the request: #{e.message} (Code: #{e.code})"
+rescue DeltaExchange::NetworkError => e
+  puts "Could not connect: #{e.message}"
+end
+```
+
+### WebSocket
+
+Note: The WebSocket client uses EventMachine in a detached thread. Reconnections must be handled explicitly by the consumer if the connection drops.
+
+```ruby
+ws = DeltaExchange::Websocket::Client.new
+
+ws.on :open do |event|
+  puts "Connected!"
+  ws.subscribe([
+    { name: "v2/ticker", symbols: ["BTCUSD"] }
+  ])
+end
+
+ws.on :message do |data|
+  puts "Received: #{data}"
+end
+
+ws.connect!
+
+# Keep the main thread alive if necessary
+loop { sleep 1 }
+```
+
+## Debugging
+
+You can enable HTTP traffic logging via the command-line environment variables. 
+The API key header is automatically suppressed during debug rendering to protect credentials.
+
+```bash
+DELTA_DEBUG=true ruby app.rb
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/delta_exchange. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/delta_exchange/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/shubham-taywade/delta-exchange.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the DeltaExchange project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/delta_exchange/blob/master/CODE_OF_CONDUCT.md).
