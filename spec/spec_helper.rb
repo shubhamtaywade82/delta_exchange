@@ -14,15 +14,12 @@ VCR.configure do |config|
   config.filter_sensitive_data("<API_KEY>") { ENV["DELTA_API_KEY"] || "dummy_api_key" }
   config.filter_sensitive_data("<API_SECRET>") { ENV["DELTA_API_SECRET"] || "dummy_api_secret" }
   
-  # Explicitly scrub headers out of intercepts globally
-  config.filter_sensitive_data("<API_KEY>") do |interaction|
-    interaction.request.headers["Api-Key"]&.first
-  end
+  # Explicitly scrub headers out of intercepts globally using correct lowercase names
   config.filter_sensitive_data("<SIGNATURE>") do |interaction|
-    interaction.request.headers["Signature"]&.first
+    interaction.request.headers["signature"]&.first
   end
   config.filter_sensitive_data("<TIMESTAMP>") do |interaction|
-    interaction.request.headers["Timestamp"]&.first
+    interaction.request.headers["timestamp"]&.first
   end
 end
 
