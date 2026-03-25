@@ -85,3 +85,76 @@ ws.connect!
 *   **EM Reactor**: The gem starts an EventMachine reactor in a background thread. This means it won't block your main application (like a Rails server).
 *   **JSON Parsing**: Every message is parsed into a Ruby Hash automatically.
 *   **Reconnection**: The gem includes internal logic to attempt reconnection if the socket drops.
+
+## Advanced: Persistence and Caching
+
+In a production trading application, you often need to access the "Last Traded Price" (LTP) from different parts of your application (e.g., a Rails controller or a background job) without maintaining a constant WebSocket connection in every process.
+
+The best practice is to use a centralized store like **Redis** or **Rails Cache**.
+
+### 1. Storing Ticks in Redis
+
+Using Redis allows multiple processes to read the latest price instantly.
+
+```ruby
+require 'redis'
+redis = Redis.new
+
+ws = DeltaExchange::Websocket::Client.new
+
+ws.on :message do |data|
+  if data['type'] == 'v2/ticker'
+    symbol = data['symbol']
+    price = data['last_price']
+    
+    # Store the latest price in Redis with an optional TTL
+    redis.set("delta:ltp:#{symbol}", price)
+    
+    # Optionally store the full tick as JSON
+    redis.set("delta:tick:#{symbol}", data.to_json)
+  end
+end
+
+ws.connect!
+```
+
+### 2. Storing Ticks in Rails Cache
+
+If you are using Rails, you can utilize the built-in cache (which often uses Redis as a backend).
+
+```ruby
+# Inside your WebSocket worker/task
+ws.on :message do |data|
+  if data['type'] == 'v2/ticker'
+    Rails.cache.write("delta_ltp_#{data['symbol']}", data['last_price'])
+  end
+end
+```
+
+### 3. Accessing LTP from a Controller
+
+Once stored, you can access the data from anywhere in your Rails app:
+
+```ruby
+class TradesController < ApplicationController
+  def current_price
+    # Fast read from cache/redis
+    price = Rails.cache.read("delta_ltp_#{params[:symbol]}")
+    
+    render json: { symbol: params[:symbol], price: price }
+  end
+end
+```
+
+### 4. Background Job Pattern
+
+For complex bots, use the WebSocket to trigger background jobs for execution:
+
+```ruby
+ws.on :message do |data|
+  if data['type'] == 'v2/ticker' && data['last_price'].to_f > 60000.0
+    # Trigger a trade job if price threshold met
+    TradeExecutionJob.perform_later('BTCUSD', 'sell', data['last_price'])
+  end
+end
+```

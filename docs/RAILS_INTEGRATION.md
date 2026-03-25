@@ -93,3 +93,43 @@ You can broadcast the incoming WebSocket data from the Rake task to your fronten
 # inside the rake task's :message block
 ActionCable.server.broadcast('price_channel', { symbol: data['symbol'], price: data['last_price'] })
 ```
+
+## Step 6: Caching Real-time Data (Redis/Rails Cache)
+
+For high-frequency data like LTP (Last Traded Price), you typically want to store the latest value in a fast cache so that your controllers, models, or other background jobs can access it instantly without hitting the database.
+
+### Using Rails.cache
+
+```ruby
+# inside the rake task's :message block
+if data['type'] == 'v2/ticker'
+  Rails.cache.write("ltp:#{data['symbol']}", data['last_price'])
+end
+
+# accessing it anywhere else in Rails
+ltp = Rails.cache.read("ltp:BTCUSD")
+```
+
+### Using Redis Directly (Recommended for Performance)
+
+If you have a dedicated Redis instance for market data:
+
+```ruby
+# inside the rake task's :message block
+$redis.hset("delta:ltp", data['symbol'], data['last_price'])
+
+# accessing it elsewhere
+ltp = $redis.hget("delta:ltp", "BTCUSD")
+```
+
+### Pattern: Fetcher Helper
+
+It's common to create a helper in your `MarketPrice` model or a specific service:
+
+```ruby
+class MarketPrice
+  def self.ltp(symbol)
+    Rails.cache.read("ltp:#{symbol}") || DeltaExchange::Models::Ticker.find(symbol)&.last_price
+  end
+end
+```
