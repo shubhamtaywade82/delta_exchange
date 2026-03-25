@@ -36,35 +36,30 @@ end
 
 ### REST API
 
-The client can be used by instantiating `DeltaExchange::Client.new` or you can rely on the singleton module accessory directly. Note: All resource methods return a Hash with indifferent access (keys can be accessed as strings or symbols).
+The client employs a highly robust **ActiveRecord**-style abstraction via the `DeltaExchange::Models::` namespace. Rather than interacting with raw unstructured JSON payloads via `Client.new`, you query the platform utilizing structured properties and class-level queries. 
 
 #### 1. Products & Market Data
-Retrieve available trading pairs, orderbooks, and option chains.
+Retrieve available trading pairs, orderbooks, and option chains natively.
 ```ruby
-# Get all products
-client.products.all
+# Get all products (returns array of Models::Product)
+DeltaExchange::Models::Product.all
 
-# Get ticker for a specific symbol
-client.products.ticker('BTCUSD')
+# Get a specific product by symbol
+product = DeltaExchange::Models::Product.find('BTCUSD')
+puts product.contract_type # "perpetual_futures"
 
-# Get L2 orderbook
-client.products.l2_orderbook('BTCUSD')
+# Get all live tickers
+DeltaExchange::Models::Ticker.all
 
-# Get an option chain layout
-client.products.get_option_chain(asset_id: 2, expiration: '2024-12-27')
-
-# Get historical candlestick data
-client.market_data.history(symbol: 'BTCUSD', resolution: '1d', start_time: 1672531200, end_time: 1675123200)
-
-# Track system heartbeat
-client.heartbeat.check
+# Leverage interactions are natively mapped
+product.set_leverage(50)
 ```
 
 #### 2. Orders
-Create, manage, and cancel active orders.
+Create, manage, and cancel your active orders.
 ```ruby
-# Create a new order
-client.orders.create({
+# Create a new order (Returns a Models::Order)
+order = DeltaExchange::Models::Order.create({
   product_id: 1,
   size: 10,
   side: 'buy',
@@ -72,62 +67,62 @@ client.orders.create({
   limit_price: '50000'
 })
 
-# Get a specific order by ID
-client.orders.get(order_id: 12345)
+# Access properties
+puts order.status # "open"
 
-# List all active orders
-client.orders.all
+# List your active orders
+DeltaExchange::Models::Order.all
 
-# Cancel a specific order
-client.orders.cancel(order_id: 12345)
-
-# Cancel all open orders for a product
-client.orders.cancel_all({ product_id: 1 })
-
-# Interactively change leverage for a product
-client.orders.change_leverage(product_id: 1, leverage: 50)
+# Cancel the order directly from its instance
+order.cancel
 ```
 
 #### 3. Positions & Fills
-Track open derivatives positions and execution histories.
+Track open derivatives positions and execution histories cleanly.
 ```ruby
 # Get all open positions
-client.positions.all
+DeltaExchange::Models::Position.all
 
-# Update margin on an isolated position
-client.positions.update_margin(product_id: 1, margin: '150.5')
+# Find an isolated position by Product ID
+position = DeltaExchange::Models::Position.find(1)
 
-# Auto top-up margin
-client.positions.auto_topup(product_id: 1, auto_topup: true)
+# Modify your isolated positions natively
+position.adjust_margin('150.5', type: 'add')
+position.set_auto_topup(true)
 
-# Retrieve recent trade fills
-client.fills.all(product_id: 1, limit: 50)
+# Retrieve recent trade fills (Returns an array of Models::Fill)
+DeltaExchange::Models::Fill.all(product_id: 1, limit: 50)
 ```
 
 #### 4. Account & Wallet
 Monitor balances and configure account-level preferences.
 ```ruby
 # Get wallet balances across all assets
-client.wallet.balances
+DeltaExchange::Models::WalletBalance.all
+
+# Isolate a specific currency balance
+btc_balance = DeltaExchange::Models::WalletBalance.find_by_asset('BTC')
 
 # List recent wallet transactions
-client.wallet.transactions
+DeltaExchange::Models::WalletTransaction.all
 
-# View user profile details
-client.account.profile
+# View your user profile details
+profile = DeltaExchange::Models::Profile.fetch
+puts profile.kyc_status
 
-# Update trading preferences
-client.account.trading_preferences(cancel_on_disconnect: true)
+# Update trading preferences natively
+prefs = DeltaExchange::Models::TradingPreferences.fetch
+prefs.update(cancel_on_disconnect: true)
 ```
 
 #### 5. Assets & Indices
 Pull infrastructure parameters mapping indices to component assets.
 ```ruby
 # Get all platform assets
-client.assets.all
+DeltaExchange::Models::Asset.all
 
 # Get all tracked indices
-client.indices.all
+DeltaExchange::Models::Index.all
 ```
 
 ### Error Handling
