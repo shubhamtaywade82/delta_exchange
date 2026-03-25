@@ -90,9 +90,17 @@ order.cancel
 
 #### 3. Positions & Fills
 Track open derivatives positions and execution histories cleanly.
+
+You can instantly execute commands atop the models natively using class methods. This bypasses structural scaffolding because the library manages connections globally by default!
+
 ```ruby
-# Get all open positions
-DeltaExchange::Models::Position.all
+# Retrieve Native Ruby Objects instead of messy Array Hashes
+orders = DeltaExchange::Models::Order.all
+
+# Manipulate endpoints using direct class directives
+DeltaExchange::Models::Position.close_all(
+  product_id: 27 # BTCUSD testnet
+)
 
 # Find an isolated position by Product ID
 position = DeltaExchange::Models::Position.find(1)

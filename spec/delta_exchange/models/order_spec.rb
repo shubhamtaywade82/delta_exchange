@@ -2,20 +2,29 @@
 
 require "spec_helper"
 
-RSpec.describe DeltaExchange::Models::Order, :vcr do
+RSpec.describe DeltaExchange::Models::Order do
   describe ".all" do
+    before do
+      stub_request(:get, %r{https://cdn-ind\.testnet\.deltaex\.org/v2/orders})
+        .to_return(status: 200, body: '{"success":true,"result":[{"id": 1, "product_id": 27}]}')
+    end
+
     it "returns active orders over authenticated connection securely" do
       orders = described_class.all
       
       expect(orders).to be_an(Array)
-      # Depending on the testnet state, this might be genuinely empty
-      expect(orders.first).to be_a(described_class) unless orders.empty?
+      expect(orders.first).to be_a(described_class)
+      expect(orders.first.id).to eq(1)
     end
   end
 
   describe ".create" do
+    before do
+      stub_request(:post, %r{https://cdn-ind\.testnet\.deltaex\.org/v2/orders})
+        .to_return(status: 200, body: '{"success":true,"result":{"id": 123, "status": "open", "product_id": 27}}')
+    end
+
     it "constructs a brand new order onto the testnet safely" do
-      # 27 is the standard Product ID for BTCUSD on testnet mappings
       order = described_class.create({
         product_id: 27,
         size: 1,
@@ -25,7 +34,7 @@ RSpec.describe DeltaExchange::Models::Order, :vcr do
       })
       
       expect(order).to be_a(described_class)
-      expect(order.status).not_to be_nil
+      expect(order.status).to eq("open")
       expect(order.product_id).to eq(27)
     end
   end

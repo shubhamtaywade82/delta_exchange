@@ -22,7 +22,7 @@ module DeltaExchange
         end
 
         def create(payload)
-          new(resource.create(payload))
+          build_from_response(resource.create(payload))
         end
       end
 
