@@ -41,6 +41,7 @@ module DeltaExchange
       def close_all(payload = {})
         post("/v2/positions/close_all", payload)
       end
+      public :auto_topup, :close_all
     end
   end
 end

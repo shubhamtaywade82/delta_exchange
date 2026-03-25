@@ -77,6 +77,7 @@ module DeltaExchange
       def set_leverage(payload)
         post("/v2/orders/leverage", payload)
       end
+      public :cancel, :cancel_all, :cancel_batch, :cancel_after, :set_leverage
     end
   end
 end
