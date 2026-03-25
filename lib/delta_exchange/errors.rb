@@ -11,11 +11,23 @@ module DeltaExchange
       @code = code
       @response_body = response_body
     end
+
+    def self.from_hash(hash, status: nil)
+      msg = hash[:error] || hash[:message] || "API error"
+      new(msg, code: status || hash[:code], response_body: hash)
+    end
   end
 
   class AuthenticationError < ApiError; end
   class InvalidAuthenticationError < AuthenticationError; end
-  class RateLimitError < ApiError; end
+  class RateLimitError < ApiError
+    attr_reader :retry_after_seconds
+
+    def initialize(message = nil, retry_after_seconds: nil, **kwargs)
+      super(message, **kwargs)
+      @retry_after_seconds = retry_after_seconds
+    end
+  end
   class ValidationError < Error; end
   class NotFoundError < ApiError; end
   class InternalServerError < ApiError; end

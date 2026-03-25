@@ -20,7 +20,17 @@ module DeltaExchange
       end
 
       def subaccount_transfer(payload)
+        validate_transfer!(payload)
         post("/v2/wallets/sub_account_balance_transfer", payload)
+      end
+
+      private
+
+      def validate_transfer!(payload)
+        result = Contracts::WalletTransferContract.new.call(payload)
+        return if result.success?
+
+        raise ValidationError, "Invalid transfer parameters: #{result.errors.to_h}"
       end
 
       def withdrawals(params = {})

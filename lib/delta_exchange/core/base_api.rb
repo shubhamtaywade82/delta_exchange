@@ -3,9 +3,8 @@
 module DeltaExchange
   module Core
     class BaseAPI
-      include Helpers::APIHelper
-      include Helpers::AttributeHelper
       include Helpers::ValidationHelper
+      include Helpers::AttributeHelper
 
       attr_reader :client
 

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require "dry-validation"
+require "set"
 
 module DeltaExchange
   module Core
     class BaseModel
-      include Helpers::APIHelper
       include Helpers::AttributeHelper
 
       attr_reader :attributes, :errors
@@ -21,11 +21,12 @@ module DeltaExchange
         attr_reader :defined_attributes
 
         def attributes(*args)
-          @defined_attributes ||= []
-          @defined_attributes.concat(args.map(&:to_s))
+          @defined_attributes ||= Set.new
+          @defined_attributes.merge(args.map(&:to_s))
           args.each do |attr|
             define_method(attr) { @attributes[attr] }
           end
+          @defined_attributes.to_a
         end
 
         def build_from_response(response)

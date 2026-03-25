@@ -23,10 +23,12 @@ module DeltaExchange
       end
 
       def create(payload)
+        validate_order!(payload)
         post("/v2/orders", payload)
       end
 
       def create_bracket(payload)
+        # Bracket orders have similar but slightly different fields
         post("/v2/orders/bracket", payload)
       end
 
@@ -35,7 +37,17 @@ module DeltaExchange
       end
 
       def update(payload)
+        validate_order!(payload)
         put("/v2/orders", payload)
+      end
+
+      private
+
+      def validate_order!(payload)
+        result = Contracts::OrderContract.new.call(payload)
+        return if result.success?
+
+        raise ValidationError, "Invalid order parameters: #{result.errors.to_h}"
       end
 
       def update_bracket(payload)

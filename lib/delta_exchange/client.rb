@@ -166,7 +166,7 @@ module DeltaExchange
 
       return parsed_response if http_ok_without_api_failure?(response, parsed_response)
 
-      raise ApiError.from_hash(parsed_response)
+      raise ApiError.from_hash(parsed_response, status: response.status)
     rescue JSON::ParserError
       raise Error, "API returned non-JSON response (HTTP #{response.status}): #{body_str[0, 500]}"
     end

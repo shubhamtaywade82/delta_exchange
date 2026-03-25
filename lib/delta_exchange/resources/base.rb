@@ -6,7 +6,9 @@ module DeltaExchange
       attr_reader :client
 
       def initialize(client = nil)
-        @client = client || DeltaExchange::Client.new
+        raise ArgumentError, "client must be provided" unless client
+        
+        @client = client
       end
 
       protected

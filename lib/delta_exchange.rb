@@ -8,7 +8,6 @@ require "logger"
 module DeltaExchange
   loader = Zeitwerk::Loader.for_gem
   loader.inflector.inflect(
-    "api_helper" => "APIHelper",
     "base_api" => "BaseAPI"
   )
   loader.setup

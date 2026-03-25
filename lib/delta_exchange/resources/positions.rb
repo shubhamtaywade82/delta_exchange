@@ -16,11 +16,22 @@ module DeltaExchange
       end
 
       def adjust_margin(payload)
+        validate_position!(payload)
         post("/v2/positions/change_margin", payload)
       end
 
       def change_leverage(payload)
+        validate_position!(payload)
         post("/v2/positions/change_leverage", payload)
+      end
+
+      private
+
+      def validate_position!(payload)
+        result = Contracts::PositionContract.new.call(payload)
+        return if result.success?
+
+        raise ValidationError, "Invalid position parameters: #{result.errors.to_h}"
       end
 
       def auto_topup(payload)
