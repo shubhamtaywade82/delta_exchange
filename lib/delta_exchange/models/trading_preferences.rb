@@ -3,7 +3,9 @@
 module DeltaExchange
   module Models
     class TradingPreferences < Core::BaseModel
-      attributes :cancel_on_disconnect
+      attributes :user_id, :vip_level, :volume_30d, :referral_discount_factor,
+                 :default_auto_topup, :email_preferences, :notification_preferences,
+                 :deto_balance, :deto_for_commission, :cancel_on_disconnect
 
       class << self
         def resource

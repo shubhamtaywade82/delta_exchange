@@ -5,7 +5,8 @@ module DeltaExchange
     class Ticker < Core::BaseModel
       attributes :symbol, :contract_type, :mark_price, :spot_price, :strike_price,
                  :open, :high, :low, :close, :volume, :turnover, :turnover_usd,
-                 :size, :quotes, :price_band, :greeks, :funding_rate
+                 :size, :quotes, :price_band, :greeks, :funding_rate, :oi, :oi_value,
+                 :oi_value_usd, :ltp_change_24h, :mark_change_24h
 
       class << self
         def resource

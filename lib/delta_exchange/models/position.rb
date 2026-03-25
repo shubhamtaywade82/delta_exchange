@@ -12,7 +12,7 @@ module DeltaExchange
         end
 
         def all(params = {})
-          build_from_response(resource.all(params))
+          build_from_response(resource.margined(params))
         end
 
         def find(product_id)
