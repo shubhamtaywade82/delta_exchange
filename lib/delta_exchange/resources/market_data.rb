@@ -39,6 +39,18 @@ module DeltaExchange
       def option_greeks(params = {})
         get("/v2/option_greeks", params, authenticate: false)
       end
+
+      def funding_rates(params = {})
+        get("/v2/history/funding_rates", params, authenticate: false)
+      end
+
+      def open_interest(params = {})
+        get("/v2/history/open_interest", params, authenticate: false)
+      end
+
+      def volume_stats(params = {})
+        get("/v2/stats/volume", params, authenticate: false)
+      end
     end
   end
 end

@@ -38,18 +38,33 @@ end
 
 The client can be used by instantiating `DeltaExchange::Client.new` or you can rely on the singleton module accessory directly. Note: All resource methods return a Hash with indifferent access (keys can be accessed as strings or symbols).
 
+#### 1. Products & Market Data
+Retrieve available trading pairs, orderbooks, and option chains.
 ```ruby
-# Using singleton (after configure)
-products = DeltaExchange.client.products.all
+# Get all products
+client.products.all
 
-# Using direct client
-client = DeltaExchange::Client.new
+# Get ticker for a specific symbol
+client.products.ticker('BTCUSD')
 
-# Market Data
-ticker = client.products.ticker('BTCUSD')
+# Get L2 orderbook
+client.products.l2_orderbook('BTCUSD')
 
-# Orders
-order = client.orders.create({
+# Get an option chain layout
+client.products.get_option_chain(asset_id: 2, expiration: '2024-12-27')
+
+# Get historical candlestick data
+client.market_data.history(symbol: 'BTCUSD', resolution: '1d', start_time: 1672531200, end_time: 1675123200)
+
+# Track system heartbeat
+client.heartbeat.check
+```
+
+#### 2. Orders
+Create, manage, and cancel active orders.
+```ruby
+# Create a new order
+client.orders.create({
   product_id: 1,
   size: 10,
   side: 'buy',
@@ -57,12 +72,62 @@ order = client.orders.create({
   limit_price: '50000'
 })
 
-# Cancel all orders (accepts query parameters)
+# Get a specific order by ID
+client.orders.get(order_id: 12345)
+
+# List all active orders
+client.orders.all
+
+# Cancel a specific order
+client.orders.cancel(order_id: 12345)
+
+# Cancel all open orders for a product
 client.orders.cancel_all({ product_id: 1 })
 
-# Account
-balances = client.wallet.balances
-profile = client.account.profile
+# Interactively change leverage for a product
+client.orders.change_leverage(product_id: 1, leverage: 50)
+```
+
+#### 3. Positions & Fills
+Track open derivatives positions and execution histories.
+```ruby
+# Get all open positions
+client.positions.all
+
+# Update margin on an isolated position
+client.positions.update_margin(product_id: 1, margin: '150.5')
+
+# Auto top-up margin
+client.positions.auto_topup(product_id: 1, auto_topup: true)
+
+# Retrieve recent trade fills
+client.fills.all(product_id: 1, limit: 50)
+```
+
+#### 4. Account & Wallet
+Monitor balances and configure account-level preferences.
+```ruby
+# Get wallet balances across all assets
+client.wallet.balances
+
+# List recent wallet transactions
+client.wallet.transactions
+
+# View user profile details
+client.account.profile
+
+# Update trading preferences
+client.account.trading_preferences(cancel_on_disconnect: true)
+```
+
+#### 5. Assets & Indices
+Pull infrastructure parameters mapping indices to component assets.
+```ruby
+# Get all platform assets
+client.assets.all
+
+# Get all tracked indices
+client.indices.all
 ```
 
 ### Error Handling

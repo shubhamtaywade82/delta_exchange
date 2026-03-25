@@ -22,6 +22,14 @@ module DeltaExchange
       def subaccount_transfer(payload)
         post("/v2/wallets/sub_account_balance_transfer", payload)
       end
+
+      def withdrawals(params = {})
+        get("/v2/wallet/withdrawals", params)
+      end
+
+      def deposits(params = {})
+        get("/v2/wallet/deposits", params)
+      end
     end
   end
 end

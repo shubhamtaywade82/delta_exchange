@@ -31,7 +31,16 @@ module DeltaExchange
         put("/v2/users/reset_mmp", payload)
       end
 
-      # @deprecated Use {#trading_preferences} — Delta v2 uses +/v2/users/trading_preferences+.
+      def fee_tiers
+        get("/v2/users/fee_tiers")
+      end
+
+      def referrals
+        get("/v2/users/referrals")
+      end
+
+      # @deprecated Use {#trading_preferences}
+ — Delta v2 uses +/v2/users/trading_preferences+.
       def preferences
         trading_preferences
       end
