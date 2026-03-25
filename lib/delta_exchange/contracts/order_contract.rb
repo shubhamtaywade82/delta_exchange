@@ -17,9 +17,7 @@ module DeltaExchange
       end
 
       rule(:limit_price) do
-        if values[:order_type] == DeltaExchange::Constants::OrderType::LIMIT && values[:limit_price].nil?
-          key.failure("is required for limit orders")
-        end
+        key.failure("is required for limit orders") if values[:order_type] == DeltaExchange::Constants::OrderType::LIMIT && values[:limit_price].nil?
       end
     end
   end

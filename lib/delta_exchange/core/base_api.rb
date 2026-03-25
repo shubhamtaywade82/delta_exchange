@@ -31,6 +31,7 @@ module DeltaExchange
 
       def delete(endpoint, payload = {}, params = {}, authenticate: true)
         handle_response(client.delete(endpoint, payload, params, authenticate: authenticate))
+      end
     end
   end
 end
