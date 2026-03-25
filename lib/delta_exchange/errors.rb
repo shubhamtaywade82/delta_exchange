@@ -20,14 +20,16 @@ module DeltaExchange
 
   class AuthenticationError < ApiError; end
   class InvalidAuthenticationError < AuthenticationError; end
+
   class RateLimitError < ApiError
     attr_reader :retry_after_seconds
 
-    def initialize(message = nil, retry_after_seconds: nil, **kwargs)
-      super(message, **kwargs)
+    def initialize(message = nil, retry_after_seconds: nil, **)
+      super(message, **)
       @retry_after_seconds = retry_after_seconds
     end
   end
+
   class ValidationError < Error; end
   class NotFoundError < ApiError; end
   class InternalServerError < ApiError; end

@@ -8,7 +8,6 @@ module DeltaExchange
 
       attr_reader :client
 
-
       def initialize(client: nil)
         @client = client || Client.new
       end

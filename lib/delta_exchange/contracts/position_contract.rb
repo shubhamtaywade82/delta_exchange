@@ -14,9 +14,7 @@ module DeltaExchange
       end
 
       rule(:amount) do
-        if values[:type] && values[:amount].nil?
-          key.failure("is required when type is present")
-        end
+        key.failure("is required when type is present") if values[:type] && values[:amount].nil?
       end
     end
   end

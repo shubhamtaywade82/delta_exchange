@@ -76,7 +76,11 @@ module DeltaExchange
         end
 
         @ws.on :message do |event|
-          data = JSON.parse(event.data) rescue event.data
+          data = begin
+            JSON.parse(event.data)
+          rescue StandardError
+            event.data
+          end
           @on_message&.call(data)
         end
 

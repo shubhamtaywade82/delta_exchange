@@ -14,4 +14,4 @@ gem "rubocop", "~> 1.21"
 gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
 
-gem "dotenv", groups: [:development, :test]
+gem "dotenv", groups: %i[development test]

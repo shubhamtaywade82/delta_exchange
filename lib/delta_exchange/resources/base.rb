@@ -7,7 +7,7 @@ module DeltaExchange
 
       def initialize(client = nil)
         raise ArgumentError, "client must be provided" unless client
-        
+
         @client = client
       end
 

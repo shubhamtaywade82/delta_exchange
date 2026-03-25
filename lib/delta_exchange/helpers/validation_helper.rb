@@ -18,11 +18,11 @@ module DeltaExchange
 
         contract = contract_class.new
         result = contract.call(@attributes)
-        
-        unless result.success?
-          @errors = result.errors.to_h
-          raise ValidationError, "Invalid parameters: #{@errors.inspect}"
-        end
+
+        return if result.success?
+
+        @errors = result.errors.to_h
+        raise ValidationError, "Invalid parameters: #{@errors.inspect}"
       end
 
       def valid?
