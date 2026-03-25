@@ -20,6 +20,17 @@ Or install it yourself as:
 
     $ gem install delta_exchange
 
+## Documentation
+
+For detailed guides and examples, see:
+
+*   [Getting Started](docs/GETTING_STARTED.md)
+*   [Authentication Guide](docs/AUTHENTICATION.md)
+*   [REST API Guide](docs/REST_API_GUIDE.md)
+*   [WebSocket Guide](docs/WEBSOCKET_GUIDE.md)
+*   [Rails Integration](docs/RAILS_INTEGRATION.md)
+*   [Standalone Ruby Guide](docs/STANDALONE_RUBY_GUIDE.md)
+
 ## Usage
 
 ### Configuration

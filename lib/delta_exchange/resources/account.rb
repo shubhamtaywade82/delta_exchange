@@ -39,8 +39,7 @@ module DeltaExchange
         get("/v2/users/referrals")
       end
 
-      # @deprecated Use {#trading_preferences}
- — Delta v2 uses +/v2/users/trading_preferences+.
+      # @deprecated Use {#trading_preferences} - Delta v2 uses +/v2/users/trading_preferences+.
       def preferences
         trading_preferences
       end
