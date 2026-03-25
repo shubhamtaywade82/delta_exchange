@@ -33,11 +33,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "activesupport", ">= 7.0"
+  spec.add_dependency "dry-validation", "~> 1.8"
   spec.add_dependency "eventmachine", "~> 1.2"
   spec.add_dependency "faraday", "~> 2.0"
   spec.add_dependency "faye-websocket", "~> 0.11"
   spec.add_dependency "zeitwerk", ">= 2.6"
-  spec.add_dependency "dry-validation", "~> 1.8"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

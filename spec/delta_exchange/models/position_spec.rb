@@ -11,7 +11,7 @@ RSpec.describe DeltaExchange::Models::Position do
 
     it "fetches live testnet open derivatives positions natively" do
       positions = described_class.all
-      
+
       expect(positions).to be_an(Array)
       expect(positions.first).to be_a(described_class)
       expect(positions.first.product_id).to eq(27)

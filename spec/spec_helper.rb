@@ -13,7 +13,7 @@ VCR.configure do |config|
   # Filter sensitive environmental keys from testnet captures
   config.filter_sensitive_data("<API_KEY>") { ENV["DELTA_API_KEY"] || "dummy_api_key" }
   config.filter_sensitive_data("<API_SECRET>") { ENV["DELTA_API_SECRET"] || "dummy_api_secret" }
-  
+
   # Explicitly scrub headers out of intercepts globally using correct lowercase names
   config.filter_sensitive_data("<SIGNATURE>") do |interaction|
     interaction.request.headers["signature"]&.first

@@ -127,7 +127,7 @@ module DeltaExchange
 
     def resolve_root_url(config, explicit_base_url)
       return explicit_base_url if explicit_base_url.present?
-      
+
       base = config.instance_variable_get(:@base_url)
       return base if base.present?
 

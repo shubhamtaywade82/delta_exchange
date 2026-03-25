@@ -21,7 +21,7 @@ RSpec.describe DeltaExchange::Client do
       client = described_class.new(api_key: "", api_secret: "")
       expect { client.get("/v2/profile") }.to raise_error(DeltaExchange::AuthenticationError)
     end
-    
+
     it "allows unauthenticated calls when explicitly told" do
       client = described_class.new(api_key: nil, api_secret: nil)
       # Ensure it proceeds to connection rather than immediately blocking on `ensure_credentials!`

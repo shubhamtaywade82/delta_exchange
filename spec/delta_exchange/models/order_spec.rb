@@ -11,7 +11,7 @@ RSpec.describe DeltaExchange::Models::Order do
 
     it "returns active orders over authenticated connection securely" do
       orders = described_class.all
-      
+
       expect(orders).to be_an(Array)
       expect(orders.first).to be_a(described_class)
       expect(orders.first.id).to eq(1)
@@ -26,13 +26,13 @@ RSpec.describe DeltaExchange::Models::Order do
 
     it "constructs a brand new order onto the testnet safely" do
       order = described_class.create({
-        product_id: 27,
-        size: 1,
-        side: "buy",
-        order_type: "limit_order",
-        limit_price: "25000"
-      })
-      
+                                       product_id: 27,
+                                       size: 1,
+                                       side: "buy",
+                                       order_type: "limit_order",
+                                       limit_price: "25000"
+                                     })
+
       expect(order).to be_a(described_class)
       expect(order.status).to eq("open")
       expect(order.product_id).to eq(27)

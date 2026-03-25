@@ -6,7 +6,7 @@ RSpec.describe DeltaExchange::Configuration do
   describe "defaults" do
     it "sets base parameters perfectly" do
       config = described_class.new
-      
+
       expect(config.testnet).to be false
       expect(config.connect_timeout).to eq(10)
       expect(config.read_timeout).to eq(30)
