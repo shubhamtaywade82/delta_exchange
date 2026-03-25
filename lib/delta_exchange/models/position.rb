@@ -8,7 +8,7 @@ module DeltaExchange
 
       class << self
         def resource
-          @resource ||= DeltaExchange::Resources::Positions.new
+          @resource ||= DeltaExchange::Client.new.positions
         end
 
         def all(params = {})

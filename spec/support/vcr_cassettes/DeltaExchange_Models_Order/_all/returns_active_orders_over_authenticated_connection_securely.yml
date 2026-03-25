@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://cdn-ind.testnet.deltaex.org/v2/orders
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - delta-exchange-ruby
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      Api-Key:
+      - "<API_KEY>"
+      Timestamp:
+      - "<TIMESTAMP>"
+      Signature:
+      - "<SIGNATURE>"
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '52'
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 25 Mar 2026 18:14:57 GMT
+      Server:
+      - Cowboy
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Request-In-Time:
+      - '1774462497303742'
+      Request-Out-Time:
+      - '1774462497304201'
+      X-Cache:
+      - Error from cloudfront
+      Via:
+      - 1.1 7fa8400a1f843348302dcb032a91101a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - MAA51-P3
+      X-Amz-Cf-Id:
+      - NIrNWTZWdTwibUo5EjbcMt7Q2w57_36FwdvNIeG-kqIwm7MYtKPkFQ==
+      Vary:
+      - Origin
+    body:
+      encoding: UTF-8
+      string: '{"error":{"code":"invalid_api_key"},"success":false}'
+  recorded_at: Wed, 25 Mar 2026 18:14:57 GMT
+recorded_with: VCR 6.4.0

@@ -1,0 +1,64 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://cdn-ind.testnet.deltaex.org/v2/products/BTCUSD
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - delta-exchange-ruby
+      Content-Type:
+      - application/json
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 25 Mar 2026 18:14:58 GMT
+      Cache-Control:
+      - max-age=0, private, must-revalidate, max-age=0, private, must-revalidate
+      Request-In-Time:
+      - '1774462498314821'
+      Request-Out-Time:
+      - '1774462498328534'
+      Server:
+      - nginx/1.18.0 (Ubuntu)
+      Vary:
+      - Accept-Encoding
+      - Origin
+      Via:
+      - 1.1 28c0fd334bf09cab9307123328ac94b6.cloudfront.net (CloudFront)
+      Access-Control-Allow-Headers:
+      - "*,Authorization"
+      Access-Control-Allow-Methods:
+      - "*"
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Cache:
+      - Miss from cloudfront
+      X-Amz-Cf-Pop:
+      - BLR50-P2
+      X-Amz-Cf-Id:
+      - SxFnGiY0R3ZQWb6fw7c2fRpMXFb-IcSiD3s-COAtLXalTK5-yUDOSQ==
+    body:
+      encoding: ASCII-8BIT
+      string: '{"result":{"funding_method":"mark_price","settlement_price":null,"symbol":"BTCUSD","contract_value":"0.001","tick_size":"0.1","insurance_fund_margin_contribution":"5","is_quanto":false,"spot_index":{"config":{"price_alert_enabled":true,"quoting_asset":"USD","service_id":1,"underlying_asset":"BTC"},"constituent_exchanges":[],"constituent_indices":{"expression":"${e1}
+        * ${e2}","indices":{"e1":".DEXBTUSDT","e2":".DEUSDTUSD"}},"description":"","health_interval":300,"id":1,"impact_size":"1.000000000000000000","index_type":"spot_pair","is_composite":true,"price_method":"orderbook","quoting_asset_id":3,"symbol":".DEXBTUSD","tick_size":"0.500000000000000000","underlying_asset_id":2},"state":"live","launch_time":"2020-04-20T08:37:05Z","id":84,"underlying_asset":{"base_withdrawal_fee":"0.000000000000000000","id":2,"interest_credit":false,"interest_slabs":null,"kyc_deposit_limit":"0.000000000000000000","kyc_withdrawal_limit":"0.000000000000000000","min_withdrawal_amount":"0.000000000000000000","minimum_precision":4,"name":"Bitcoin","networks":[],"precision":8,"sort_priority":1,"symbol":"BTC","variable_withdrawal_fee":"0.000000000000000000"},"settlement_time":null,"product_specs":{"expiry_interval":28800,"rate_exchange_interval":28800,"tags":["layer_1and2"],"vol_expiry_time":172800},"default_leverage":"10.000000000000000000","quoting_asset":{"base_withdrawal_fee":"0.000000000000000000","id":3,"interest_credit":false,"interest_slabs":null,"kyc_deposit_limit":"0.000000000000000000","kyc_withdrawal_limit":"0.000000000000000000","min_withdrawal_amount":"0.000000000000000000","minimum_precision":2,"name":"US
+        Dollar","networks":[],"precision":8,"sort_priority":null,"symbol":"USD","variable_withdrawal_fee":"0.000000000000000000"},"short_description":null,"initial_margin_scaling_factor":"0","auction_start_time":"2026-03-13T04:42:24Z","disruption_reason":null,"auction_finish_time":null,"impact_size":10000,"position_size_limit":10000,"maker_commission_rate":"0.0002","contract_unit_currency":"BTC","strike_price":null,"price_band":"100","maintenance_margin":"0.25","taker_commission_rate":"0.0005","maintenance_margin_scaling_factor":"0","liquidation_penalty_factor":"1","max_leverage_notional":"10000","basis_factor_max_limit":"10.95","settling_asset":{"base_withdrawal_fee":"0.000000000000000000","id":3,"interest_credit":false,"interest_slabs":null,"kyc_deposit_limit":"0.000000000000000000","kyc_withdrawal_limit":"0.000000000000000000","min_withdrawal_amount":"0.000000000000000000","minimum_precision":2,"name":"US
+        Dollar","networks":[],"precision":8,"sort_priority":null,"symbol":"USD","variable_withdrawal_fee":"0.000000000000000000"},"ui_config":{"default_trading_view_candle":"15","leverage_slider_values":[1,2,5,10,25,50,100],"price_clubbing_values":[0.1,1,10,50],"show_bracket_orders":false,"sort_priority":1},"contract_type":"perpetual_futures","initial_margin":"0.5","trading_status":"operational","notional_type":"vanilla","description":"Bitcoin
+        Perpetual","annualized_funding":"0","barrier_price":null},"success":true}'
+  recorded_at: Wed, 25 Mar 2026 18:14:58 GMT
+recorded_with: VCR 6.4.0

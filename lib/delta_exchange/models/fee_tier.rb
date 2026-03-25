@@ -7,7 +7,7 @@ module DeltaExchange
 
       class << self
         def resource
-          @resource ||= DeltaExchange::Resources::Account.new
+          @resource ||= DeltaExchange::Client.new.account
         end
 
         def current

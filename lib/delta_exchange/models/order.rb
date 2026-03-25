@@ -9,7 +9,8 @@ module DeltaExchange
 
       class << self
         def resource
-          @resource ||= DeltaExchange::Resources::Orders.new
+          # Lazily instantiate a client and reuse its Orders resource.
+          @resource ||= DeltaExchange::Client.new.orders
         end
 
         def all(params = {})

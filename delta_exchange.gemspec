@@ -37,7 +37,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency "faraday", "~> 2.0"
   spec.add_dependency "faye-websocket", "~> 0.11"
   spec.add_dependency "zeitwerk", ">= 2.6"
+  spec.add_dependency "dry-validation", "~> 1.8"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
+  spec.add_development_dependency "rspec", "~> 3.12"
+  spec.add_development_dependency "vcr"
+  spec.add_development_dependency "webmock"
 end

@@ -8,7 +8,7 @@ module DeltaExchange
 
       class << self
         def resource
-          @resource ||= DeltaExchange::Resources::Fills.new
+          @resource ||= DeltaExchange::Client.new.fills
         end
 
         def all(params = {})

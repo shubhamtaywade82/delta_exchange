@@ -122,15 +122,16 @@ module DeltaExchange
 
       return if @api_key.present? && @api_secret.present?
 
-      raise AuthenticationError, "api_key and api_secret are required for authenticated requests"
+      raise DeltaExchange::AuthenticationError, "api_key and api_secret are required for authenticated requests"
     end
 
     def resolve_root_url(config, explicit_base_url)
       return explicit_base_url if explicit_base_url.present?
+      
+      base = config.instance_variable_get(:@base_url)
+      return base if base.present?
 
-      return DeltaExchange::Configuration::TESTNET_URL if @testnet
-
-      config.base_url
+      @testnet ? DeltaExchange::Configuration::TESTNET_URL : DeltaExchange::Configuration::PRODUCTION_URL
     end
 
     def build_connection(url, config)
@@ -149,7 +150,7 @@ module DeltaExchange
 
       if response.status == 429
         retry_after = response.headers["X-RATE-LIMIT-RESET"]&.to_i
-        raise RateLimitError.new(
+        raise DeltaExchange::RateLimitError.new(
           "Rate limited",
           retry_after_seconds: retry_after,
           response_body: parse_json_optional(body_str)
@@ -157,7 +158,7 @@ module DeltaExchange
       end
 
       if body_str.blank?
-        raise Error, "API returned empty body (HTTP #{response.status})" unless response.success?
+        raise DeltaExchange::Error, "API returned empty body (HTTP #{response.status})" unless response.success?
 
         return {}.with_indifferent_access
       end
@@ -166,9 +167,9 @@ module DeltaExchange
 
       return parsed_response if http_ok_without_api_failure?(response, parsed_response)
 
-      raise ApiError.from_hash(parsed_response, status: response.status)
+      raise DeltaExchange::ApiError.from_hash(parsed_response, status: response.status)
     rescue JSON::ParserError
-      raise Error, "API returned non-JSON response (HTTP #{response.status}): #{body_str[0, 500]}"
+      raise DeltaExchange::Error, "API returned non-JSON response (HTTP #{response.status}): #{body_str[0, 500]}"
     end
 
     def parse_json_optional(raw)

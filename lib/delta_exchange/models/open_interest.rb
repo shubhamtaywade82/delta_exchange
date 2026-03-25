@@ -7,7 +7,7 @@ module DeltaExchange
 
       class << self
         def resource
-          @resource ||= DeltaExchange::Resources::MarketData.new
+          @resource ||= DeltaExchange::Client.new.market_data
         end
 
         def history(product_id, params = {})

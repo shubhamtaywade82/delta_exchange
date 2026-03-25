@@ -29,9 +29,10 @@ module DeltaExchange
         end
 
         def build_from_response(response)
-          return response.map { |r| new(r, skip_validation: true) } if response.is_a?(Array)
+          payload = response.is_a?(Hash) && response.key?(:result) ? response[:result] : response
+          return payload.map { |r| new(r, skip_validation: true) } if payload.is_a?(Array)
 
-          new(response, skip_validation: true)
+          new(payload, skip_validation: true)
         end
       end
 

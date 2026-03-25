@@ -7,7 +7,7 @@ module DeltaExchange
 
       class << self
         def resource
-          @resource ||= DeltaExchange::Resources::Indices.new
+          @resource ||= DeltaExchange::Client.new.indices
         end
 
         def all

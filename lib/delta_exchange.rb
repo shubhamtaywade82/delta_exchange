@@ -12,6 +12,8 @@ module DeltaExchange
   )
   loader.setup
 
+  require_relative "delta_exchange/errors"
+
   class << self
     attr_writer :configuration, :logger
 
