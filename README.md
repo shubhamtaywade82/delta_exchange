@@ -26,11 +26,13 @@ Or install it yourself as:
 
 ```ruby
 DeltaExchange.configure do |config|
-  config.api_key = 'YOUR_API_KEY'
-  config.api_secret = 'YOUR_API_SECRET'
+  config.api_key = ENV['DELTA_API_KEY'] || 'YOUR_API_KEY'
+  config.api_secret = ENV['DELTA_API_SECRET'] || 'YOUR_API_SECRET'
   config.testnet = true # Optional, defaults to false
 end
 ```
+
+**Note:** If you are testing the client via `./bin/console`, it will automatically load any variables from a `.env` file in the root directory into `ENV`.
 
 ### REST API
 

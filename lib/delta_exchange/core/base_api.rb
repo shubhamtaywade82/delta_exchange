@@ -3,10 +3,12 @@
 module DeltaExchange
   module Core
     class BaseAPI
-      include Helpers::ResponseHelper
+      include Helpers::APIHelper
       include Helpers::AttributeHelper
+      include Helpers::ValidationHelper
 
       attr_reader :client
+
 
       def initialize(client: nil)
         @client = client || Client.new

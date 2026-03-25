@@ -61,6 +61,10 @@ module DeltaExchange
       def cancel_after(payload)
         post("/v2/orders/cancel_after", payload)
       end
+
+      def set_leverage(payload)
+        post("/v2/orders/leverage", payload)
+      end
     end
   end
 end

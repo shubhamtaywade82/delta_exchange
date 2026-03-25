@@ -26,6 +26,19 @@ module DeltaExchange
       def stats(params = {})
         get("/v2/stats", params, authenticate: false)
       end
+
+      def mark_price(symbol)
+        sym = CGI.escape(symbol.to_s)
+        get("/v2/mark_price/#{sym}", {}, authenticate: false)
+      end
+
+      def insurance_fund
+        get("/v2/insurance_fund", {}, authenticate: false)
+      end
+
+      def option_greeks(params = {})
+        get("/v2/option_greeks", params, authenticate: false)
+      end
     end
   end
 end

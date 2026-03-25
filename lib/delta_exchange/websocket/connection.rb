@@ -8,12 +8,12 @@ module DeltaExchange
   module Websocket
     class Connection
       RECONNECT_DELAY = 5
+      attr_accessor :on_open, :on_message, :on_close, :on_error
 
-      def initialize(url, api_key: nil, api_secret: nil, &on_message)
+      def initialize(url, api_key: nil, api_secret: nil)
         @url = url
         @api_key = api_key
         @api_secret = api_secret
-        @on_message = on_message
         @ws = nil
         @stop = false
       end
@@ -66,26 +66,29 @@ module DeltaExchange
       end
 
       def setup_ws
-        @ws = Faye::WebSocket::Client.new(@url)
+        headers = { "User-Agent" => DeltaExchange.configuration.user_agent }
+        @ws = Faye::WebSocket::Client.new(@url, nil, { headers: headers })
 
-        @ws.on :open do |_|
+        @ws.on :open do |event|
           DeltaExchange.logger.info("[DeltaExchange::WS] Connected")
           authenticate! if @api_key && @api_secret
+          @on_open&.call(event)
         end
 
         @ws.on :message do |event|
-          @on_message&.call(JSON.parse(event.data))
-        rescue StandardError
-          @on_message&.call(event.data)
+          data = JSON.parse(event.data) rescue event.data
+          @on_message&.call(data)
         end
 
         @ws.on :close do |event|
           DeltaExchange.logger.warn("[DeltaExchange::WS] Closed: #{event.code} #{event.reason}")
+          @on_close&.call(event)
           EM.stop unless EM.reactor_running? # Only stop if we started it
         end
 
         @ws.on :error do |event|
           DeltaExchange.logger.error("[DeltaExchange::WS] Error: #{event.message}")
+          @on_error&.call(event)
         end
       end
     end

@@ -19,6 +19,10 @@ module DeltaExchange
         post("/v2/positions/change_margin", payload)
       end
 
+      def change_leverage(payload)
+        post("/v2/positions/change_leverage", payload)
+      end
+
       def auto_topup(payload)
         put("/v2/positions/auto_topup", payload)
       end

@@ -8,4 +8,10 @@ require "delta_exchange"
 # with your gem easier. You can also use a different console, if you like.
 
 require "irb"
+begin
+  require "dotenv/load"
+rescue LoadError
+  # Dotenv not available, skip loading .env
+end
+
 IRB.start(__FILE__)

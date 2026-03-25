@@ -9,9 +9,12 @@ module DeltaExchange
         use_testnet = testnet.nil? ? DeltaExchange.configuration.testnet : testnet
         @url = use_testnet ? Constants::Urls::WEBSOCKET_TESTNET : Constants::Urls::WEBSOCKET_PRODUCTION
         @callbacks = Hash.new { |h, k| h[k] = [] }
-        @connection = Connection.new(@url, api_key: @api_key, api_secret: @api_secret) do |msg|
-          emit(:message, msg)
-        end
+        
+        @connection = Connection.new(@url, api_key: @api_key, api_secret: @api_secret)
+        @connection.on_open = ->(event) { emit(:open, event) }
+        @connection.on_message = ->(msg) { emit(:message, msg) }
+        @connection.on_close = ->(event) { emit(:close, event) }
+        @connection.on_error = ->(event) { emit(:error, event) }
       end
 
       def on(event, &block)

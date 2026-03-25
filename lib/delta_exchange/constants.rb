@@ -5,8 +5,8 @@ module DeltaExchange
     module Urls
       REST_PRODUCTION = "https://api.india.delta.exchange"
       REST_TESTNET = "https://cdn-ind.testnet.deltaex.org"
-      WEBSOCKET_PRODUCTION = "wss://api.india.delta.exchange/v2/websocket"
-      WEBSOCKET_TESTNET = "wss://cdn-ind.testnet.deltaex.org/v2/websocket"
+      WEBSOCKET_PRODUCTION = "wss://socket.india.delta.exchange"
+      WEBSOCKET_TESTNET = "wss://socket.testnet.deltaex.org"
     end
 
     module ContractType
