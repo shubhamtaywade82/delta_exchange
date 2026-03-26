@@ -55,9 +55,12 @@ Retrieve available trading pairs, orderbooks, and option chains natively.
 # Get all products (returns array of Models::Product)
 DeltaExchange::Models::Product.all
 
-# Get a specific product by symbol
 product = DeltaExchange::Models::Product.find('BTCUSD')
 puts product.contract_type # "perpetual_futures"
+
+# Get all live tickers and access price via .close (India API standard)
+ticker = DeltaExchange::Models::Ticker.find('BTCUSD')
+puts "Current Price: #{ticker.close}"
 
 # Get all live tickers
 DeltaExchange::Models::Ticker.all
@@ -127,10 +130,11 @@ DeltaExchange::Models::WalletTransaction.all
 
 # View your user profile details
 profile = DeltaExchange::Models::Profile.fetch
-puts profile.kyc_status
+puts "Hello #{profile.first_name}!"
 
 # Update trading preferences natively
 prefs = DeltaExchange::Models::TradingPreferences.fetch
+puts "User ID: #{prefs.user_id}"
 prefs.update(cancel_on_disconnect: true)
 ```
 

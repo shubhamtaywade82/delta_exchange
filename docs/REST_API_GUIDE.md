@@ -66,8 +66,8 @@ client.orders.create_batch(
 Margin and leverage tracking.
 
 ```ruby
-# Fetch all open positions
-positions = client.positions.all
+# Fetch all active open positions (uses /v2/positions/margined internally)
+positions = client.positions.margined
 
 # Change leverage for an open position
 client.positions.change_leverage(product_id: 1, leverage: "50")
@@ -130,7 +130,7 @@ User-level configuration and statistics.
 profile = client.account.profile
 fee_tiers = client.account.fee_tiers
 referrals = client.account.referrals
-client.account.update_trading_preferences(order_confirmation: false)
+client.account.update_trading_preferences(cancel_on_disconnect: true)
 ```
 
 ## Error Handling
@@ -143,7 +143,7 @@ begin
 rescue DeltaExchange::ValidationError => e
   puts "Check your inputs: #{e.message}"
 rescue DeltaExchange::RateLimitError => e
-  puts "Slowing down! Retry after #{e.retry_after_ms}ms"
+  puts "Slowing down! Retry after #{e.retry_after_seconds}s"
 rescue DeltaExchange::ApiError => e
   puts "API Error: #{e.message} (Code: #{e.code})"
 end
