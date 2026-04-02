@@ -33,9 +33,10 @@ Configure `delta_exchange` as a trusted publisher on RubyGems.org:
    - Owner: `shubhamtaywade82`
    - Repository: `delta_exchange`
    - Workflow file: `release.yml`
+   - Environment: `release`
 3. Save the publisher configuration.
 
-This uses GitHub OIDC trusted publishing, so the workflow does not need a long-lived `RUBYGEMS_API_KEY` or OTP secret.
+This uses GitHub OIDC trusted publishing, so the workflow does not need a long-lived `RUBYGEMS_API_KEY` or OTP secret. RubyGems must match all four values exactly.
 
 ### Release a new version
 
@@ -230,7 +231,7 @@ DELTA_DEBUG=true ruby app.rb
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/shubham-taywade/delta-exchange.
+Bug reports and pull requests are welcome on GitHub at https://github.com/shubhamtaywade82/delta_exchange.
 
 ## License
 
