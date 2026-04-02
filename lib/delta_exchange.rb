@@ -7,12 +7,9 @@ require "logger"
 
 module DeltaExchange
   loader = Zeitwerk::Loader.for_gem
-  loader.inflector.inflect(
-    "base_api" => "BaseAPI"
-  )
   loader.setup
 
-  require_relative "delta_exchange/errors"
+  require_relative "delta_exchange/error"
 
   class << self
     attr_writer :configuration, :logger

@@ -3,10 +3,19 @@
 module DeltaExchange
   module Models
     class Product < Core::BaseModel
-      attributes :id, :symbol, :description, :contract_type, :contract_value, :tick_size,
+      attributes :id, :symbol, :description, :contract_type, :contract_value, :lot_size, :tick_size,
                  :underlying_asset_symbol, :quoting_asset_symbol, :settlement_asset_symbol,
                  :state, :funding_method, :impact_size, :initial_margin, :maintenance_margin,
                  :strike_price, :expiration_time
+
+      # Delta documents per-contract sizing under product `contract_value` (and may add `lot_size`).
+      # Order `size` is in contracts; multiply by this for notional / linear PnL in the quoting currency.
+      def contract_lot_multiplier
+        raw = lot_size.presence || contract_value
+        return BigDecimal("0") if raw.blank?
+
+        BigDecimal(raw.to_s)
+      end
 
       class << self
         def resource

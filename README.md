@@ -2,7 +2,19 @@
 
 A Ruby client for the Delta Exchange API.
 
-**Requirement**: Ruby >= 3.2.0
+![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D%203.2.0-red)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Quick Links
+
+| Resource | Document | Description |
+|----------|----------|-------------|
+| **Orders** | [REST API Guide](docs/REST_API_GUIDE.md#orders) | Create, manage, and cancel orders |
+| **Products** | [REST API Guide](docs/REST_API_GUIDE.md#products) | Fetch trading pairs and market specs |
+| **WebSocket** | [WebSocket Guide](docs/WEBSOCKET_GUIDE.md) | Real-time data streams |
+| **Auth** | [Authentication](docs/AUTHENTICATION.md) | API Key & Signature management |
+
+---
 
 ## Installation
 
@@ -40,6 +52,7 @@ DeltaExchange.configure do |config|
   config.api_key = ENV['DELTA_API_KEY'] || 'YOUR_API_KEY'
   config.api_secret = ENV['DELTA_API_SECRET'] || 'YOUR_API_SECRET'
   config.testnet = true # Optional, defaults to false
+  config.websocket_reconnect_delay = 5 # Optional, defaults to 5 seconds
 end
 ```
 
@@ -65,8 +78,9 @@ puts "Current Price: #{ticker.close}"
 # Get all live tickers
 DeltaExchange::Models::Ticker.all
 
-# Leverage interactions are natively mapped
-product.set_leverage(50)
+# Mutating methods like set_leverage return the raw API response hash
+response = product.set_leverage(50)
+puts "New Leverage: #{response[:leverage]}"
 ```
 
 #### 2. Orders
@@ -166,7 +180,8 @@ end
 
 ### WebSocket
 
-Note: The WebSocket client uses EventMachine in a detached thread. Reconnections must be handled explicitly by the consumer if the connection drops.
+> [!IMPORTANT]
+> The WebSocket client uses EventMachine in a detached thread. While the gem handles automatic reconnections, you must ensure your main process remains alive (e.g., via `loop { sleep 1 }` or joining the EM thread).
 
 ```ruby
 ws = DeltaExchange::Websocket::Client.new
@@ -191,7 +206,7 @@ loop { sleep 1 }
 ## Debugging
 
 You can enable HTTP traffic logging via the command-line environment variables. 
-The API key header is automatically suppressed during debug rendering to protect credentials.
+The `api-key` and `signature` headers are **automatically redacted** during debug rendering to protect your credentials.
 
 ```bash
 DELTA_DEBUG=true ruby app.rb

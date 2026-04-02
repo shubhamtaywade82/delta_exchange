@@ -17,7 +17,8 @@ module DeltaExchange
         return unless contract_class
 
         contract = contract_class.new
-        result = contract.call(@attributes)
+        payload = instance_variable_get(:@raw_attributes) || instance_variable_get(:@attributes)
+        result = contract.call(payload)
 
         return if result.success?
 

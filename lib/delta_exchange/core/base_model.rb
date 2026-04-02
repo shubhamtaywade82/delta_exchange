@@ -6,14 +6,20 @@ module DeltaExchange
   module Core
     class BaseModel
       include Helpers::AttributeHelper
+      include Helpers::ValidationHelper
 
-      attr_reader :attributes, :errors
+      attr_reader :raw_attributes, :errors
 
       def initialize(attributes = {}, skip_validation: false)
-        @attributes = normalize_keys(attributes)
+        @raw_attributes = normalize_keys(attributes)
         @errors = {}
         validate! unless skip_validation
         assign_attributes
+      end
+
+      # Expose raw_attributes as attributes for backward compatibility or clarity.
+      def attributes
+        @raw_attributes
       end
 
       class << self
@@ -23,7 +29,7 @@ module DeltaExchange
           @defined_attributes ||= Set.new
           @defined_attributes.merge(args.map(&:to_s))
           args.each do |attr|
-            define_method(attr) { @attributes[attr] }
+            define_method(attr) { @raw_attributes[attr] }
           end
           @defined_attributes.to_a
         end
@@ -36,25 +42,11 @@ module DeltaExchange
         end
       end
 
-      def validate!
-        return true unless self.class.respond_to?(:validation_contract)
-
-        contract = self.class.validation_contract
-        return true unless contract
-
-        result = contract.call(@attributes)
-        if result.failure?
-          @errors = result.errors.to_h
-          raise ValidationError, "Validation failed: #{@errors.inspect}"
-        end
-        true
-      end
-
       private
 
       def assign_attributes
         self.class.defined_attributes&.each do |attr|
-          instance_variable_set("@#{attr}", @attributes[attr])
+          instance_variable_set("@#{attr}", @raw_attributes[attr])
         end
       end
     end

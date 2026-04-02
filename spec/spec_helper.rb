@@ -14,18 +14,18 @@ VCR.configure do |config|
   config.filter_sensitive_data("<API_KEY>") { ENV["DELTA_API_KEY"] || "dummy_api_key" }
   config.filter_sensitive_data("<API_SECRET>") { ENV["DELTA_API_SECRET"] || "dummy_api_secret" }
 
-  # Explicitly scrub headers out of intercepts globally using correct lowercase names
+  # Explicitly scrub headers out of intercepts globally in a case-insensitive manner
   config.filter_sensitive_data("<SIGNATURE>") do |interaction|
-    interaction.request.headers["signature"]&.first
+    interaction.request.headers.find { |k, _v| k.casecmp?("signature") }&.last&.first
   end
   config.filter_sensitive_data("<TIMESTAMP>") do |interaction|
-    interaction.request.headers["timestamp"]&.first
+    interaction.request.headers.find { |k, _v| k.casecmp?("timestamp") }&.last&.first
   end
 end
 
 RSpec.configure do |config|
   # Enforce Testnet Globally and configure dummies if API keys missing
-  config.before(:all) do
+  config.before(:suite) do
     DeltaExchange.configure do |c|
       c.api_key = ENV["DELTA_API_KEY"] || "dummy_api_key"
       c.api_secret = ENV["DELTA_API_SECRET"] || "dummy_api_secret"

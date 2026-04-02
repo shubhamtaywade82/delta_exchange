@@ -50,14 +50,8 @@ module DeltaExchange
         raise ValidationError, "Invalid order parameters: #{result.errors.to_h}"
       end
 
-      def update_bracket(payload)
-        put("/v2/orders/bracket", payload)
-      end
-
-      def update_batch(payload)
-        put("/v2/orders/batch", payload)
-      end
-
+      # @param payload [Hash] payload containing product_id and id (or client_order_id)
+      # @example client.orders.cancel(product_id: 1, id: 123)
       def cancel(payload)
         delete("/v2/orders", payload)
       end
@@ -77,7 +71,6 @@ module DeltaExchange
       def set_leverage(payload)
         post("/v2/orders/leverage", payload)
       end
-      public :cancel, :cancel_all, :cancel_batch, :cancel_after, :set_leverage
     end
   end
 end

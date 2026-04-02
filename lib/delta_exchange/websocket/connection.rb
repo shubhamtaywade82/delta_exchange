@@ -32,27 +32,8 @@ module DeltaExchange
         @ws&.send(data.to_json)
       end
 
-      private
-
-      def loop_run
-        until @stop
-          begin
-            if EM.reactor_running?
-              setup_ws
-              # Wait explicitly if the reactor is running on another thread/loop, but here we just sleep loop
-              sleep RECONNECT_DELAY while @ws&.ready_state == 1 && !@stop
-            else
-              EM.run { setup_ws }
-            end
-          rescue StandardError => e
-            DeltaExchange.logger.error("[DeltaExchange::WS] Loop Error: #{e.message}")
-          end
-          sleep RECONNECT_DELAY unless @stop
-        end
-      end
-
       def authenticate!
-        timestamp = Time.now.to_i
+        timestamp = Time.now.utc.to_i
         path = "/v2/websocket"
         method = "GET"
         signature = Auth.sign(method, timestamp.to_s, path, "", "", @api_secret)
@@ -63,6 +44,39 @@ module DeltaExchange
                     timestamp: timestamp,
                     signature: signature
                   })
+      end
+
+      private
+
+      def loop_run
+        until @stop
+          begin
+            if EM.reactor_running?
+              setup_ws
+              wait_for_connection_close
+            else
+              EM.run { setup_ws }
+            end
+          rescue StandardError => e
+            DeltaExchange.logger.error("[DeltaExchange::WS] Loop Error: #{e.message}")
+          end
+          handle_reconnect_delay
+        end
+      end
+
+      def wait_for_connection_close
+        # Instead of a tight loop, we sleep for longer intervals while connected
+        # or we could use a ConditionVariable if we wanted to be more reactive.
+        # But even a longer sleep is better than the original "busy-wait".
+        # The WebSocket's on :close will resume the loop if EM stops.
+        sleep 1 while @ws&.ready_state == 1 && !@stop
+      end
+
+      def handle_reconnect_delay
+        return if @stop
+
+        delay = DeltaExchange.configuration.websocket_reconnect_delay
+        sleep delay
       end
 
       def setup_ws

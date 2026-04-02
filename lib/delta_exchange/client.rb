@@ -6,6 +6,7 @@ require "time"
 require "uri"
 require "active_support/core_ext/hash/indifferent_access"
 require "active_support/core_ext/object/blank"
+require "active_support/core_ext/time"
 
 module DeltaExchange
   class Client
@@ -28,7 +29,7 @@ module DeltaExchange
 
     def request(method, path, payload = {}, params = {}, authenticate: true)
       ensure_credentials!(authenticate)
-      timestamp = Time.now.to_i.to_s
+      timestamp = Time.now.utc.to_i.to_s
       query_string = params.empty? ? "" : "?#{URI.encode_www_form(params)}"
       body = payload.empty? ? "" : payload.to_json
 
@@ -53,6 +54,8 @@ module DeltaExchange
       handle_response(response)
     rescue Faraday::TimeoutError, Faraday::ConnectionFailed, Faraday::SSLError => e
       raise(NetworkError.new(e.message).tap { |err| err.set_backtrace(e.backtrace) })
+    rescue Faraday::Error => e
+      raise(NetworkError.new("Faraday error: #{e.message}").tap { |err| err.set_backtrace(e.backtrace) })
     end
 
     def get(path, params = {}, authenticate: true)
@@ -137,7 +140,9 @@ module DeltaExchange
     def build_connection(url, config)
       Faraday.new(url: url) do |f|
         f.request :url_encoded
-        f.response :logger, DeltaExchange.logger, headers: false, bodies: false if ENV["DELTA_DEBUG"] == "true"
+        if ENV["DELTA_DEBUG"] == "true"
+          f.response :logger, DeltaExchange.logger, headers: { redact: ["api-key", "signature"] }, bodies: false
+        end
         f.options.timeout = config.read_timeout
         f.options.open_timeout = config.connect_timeout
         f.options.write_timeout = config.write_timeout if f.options.respond_to?(:write_timeout=)
