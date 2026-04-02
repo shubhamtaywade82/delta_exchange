@@ -20,6 +20,37 @@ Or install it yourself as:
 
     $ gem install delta_exchange
 
+## Releasing
+
+Publishing is handled by GitHub Actions when a version tag is pushed.
+
+### One-time RubyGems setup
+
+Configure `delta_exchange` as a trusted publisher on RubyGems.org:
+
+1. Open the gem page on RubyGems.org and manage trusted publishers.
+2. Add this GitHub repository:
+   - Owner: `shubhamtaywade82`
+   - Repository: `delta_exchange`
+   - Workflow file: `release.yml`
+3. Save the publisher configuration.
+
+This uses GitHub OIDC trusted publishing, so the workflow does not need a long-lived `RUBYGEMS_API_KEY` or OTP secret.
+
+### Release a new version
+
+1. Update `lib/delta_exchange/version.rb`.
+2. Update `CHANGELOG.md`.
+3. Merge the changes to `main`.
+4. Create and push a matching tag:
+
+```bash
+git tag v0.1.2
+git push origin v0.1.2
+```
+
+The release workflow validates that the tag matches `DeltaExchange::VERSION` before publishing the gem to RubyGems.org.
+
 ## Documentation
 
 For detailed guides and examples, see:
